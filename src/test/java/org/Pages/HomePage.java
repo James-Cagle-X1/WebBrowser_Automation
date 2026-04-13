@@ -1,5 +1,6 @@
 package org.Pages;
 
+import org.ExtentReportManager;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
@@ -36,31 +37,27 @@ public class HomePage extends BasePage {
         boolean isDisplayed = findLoginButton() != null;
         
         // Take screenshot for execution report
-        System.out.println("DEBUG: Starting screenshot process...");
         try {
             if (driver != null) {
-                System.out.println("DEBUG: Driver is not null, proceeding with screenshot");
+                // Add screenshot to Extent Report
+                ExtentReportManager.addScreenshot("Login-Button-Check");
+                
+                // Also save to target directory for backup
                 org.openqa.selenium.TakesScreenshot screenshot = (org.openqa.selenium.TakesScreenshot) driver;
                 java.io.File screenshotFile = screenshot.getScreenshotAs(org.openqa.selenium.OutputType.FILE);
-                
-                System.out.println("DEBUG: Screenshot taken, file: " + screenshotFile.getAbsolutePath());
                 
                 // Create screenshots directory if it doesn't exist
                 java.io.File renamedFile = new java.io.File("target/screenshots/login-button-check-" + System.currentTimeMillis() + ".png");
                 renamedFile.getParentFile().mkdirs();
                 
                 // Rename file to include timestamp
-                boolean renamed = screenshotFile.renameTo(renamedFile);
+                screenshotFile.renameTo(renamedFile);
                 
-                System.out.println("DEBUG: File renamed: " + renamed + " to: " + renamedFile.getAbsolutePath());
                 System.out.println("Screenshot saved: " + renamedFile.getAbsolutePath());
                 System.out.println("Login button displayed: " + isDisplayed);
-            } else {
-                System.out.println("DEBUG: Driver is null, cannot take screenshot");
             }
         } catch (Exception e) {
             System.err.println("Failed to take screenshot: " + e.getMessage());
-            e.printStackTrace();
         }
         
         return isDisplayed;
